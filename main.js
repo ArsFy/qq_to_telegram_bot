@@ -30,7 +30,7 @@ bot.on('message', async (msg) => {
             let file_id = msg.photo[msg.photo.length - 1]['file_id']
             let file_path = (await bot.getFile(file_id))['file_path'];
             getTg(`https://api.telegram.org/file/bot${config.telegram_bot_token}/${file_path}`).then(res => {
-                client.pickGroup(config.qq_group).sendMsg(`${msg.from.first_name}${msg.from.last_name != undefined ? " " + msg.from.last_name : ""}:`)
+                client.pickGroup(config.qq_group).sendMsg(`${msg.from.first_name}${msg.from.last_name != undefined ? " " + msg.from.last_name : ""}: ${msg.caption != undefined ? msg.caption : ""}`)
                 client.pickGroup(config.qq_group).sendMsg([
                     {
                         type: 'image',
@@ -50,20 +50,24 @@ client.on("system.online", () => console.log("QQ Logged in!"));
 
 client.on("message", async (e) => {
     if (e.group_id == config.qq_group) {
-        switch (e.message[0].type) {
-            case "text":
-                bot.sendMessage(config.tg_group, `${e.sender.nickname}: ${e.message[0].text}`)
-                break
-            case "image":
-                bot.sendPhoto(config.tg_group, e.message[0].url, {
-                    caption: e.sender.nickname + ":"
-                })
-                break
-            default:
-                bot.sendMessage(config.tg_group, `${e.sender.nickname}: ${e.message[0].text}`)
-                break
+        console.log(e)
+        let text = "";
+        for (let i = 0; i < e.message.length; i++) {
+            switch (e.message[i].type) {
+                case "text":
+                    text += e.message[i].text
+                    break
+                case "image":
+                    bot.sendPhoto(config.tg_group, e.message[i].url, {
+                        caption: e.sender.nickname + ":"
+                    })
+                    break
+                default:
+                    text += e.message[i].text
+                    break
+            }
         }
-
+        bot.sendMessage(config.tg_group, `${e.sender.nickname}: ${text}`)
     }
 })
 
