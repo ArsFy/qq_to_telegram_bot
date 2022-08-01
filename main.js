@@ -50,11 +50,12 @@ client.on("system.online", () => console.log("QQ Logged in!"));
 
 client.on("message", async (e) => {
     if (e.group_id == config.qq_group) {
-        console.log(e)
         let text = "";
+        let n = 0;
         for (let i = 0; i < e.message.length; i++) {
             switch (e.message[i].type) {
                 case "text":
+                    n++
                     text += e.message[i].text
                     break
                 case "image":
@@ -63,11 +64,14 @@ client.on("message", async (e) => {
                     })
                     break
                 default:
+                    n++
                     text += e.message[i].text
                     break
             }
         }
-        bot.sendMessage(config.tg_group, `${e.sender.nickname}: ${text}`)
+        if (n != 0) {
+            bot.sendMessage(config.tg_group, `${e.sender.nickname}: ${text}`)
+        }
     }
 })
 
