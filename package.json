@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "axios": "^0.27.2",
+    "fs": "^0.0.1-security",
+    "node-telegram-bot-api": "^0.58.0",
+    "oicq": "^2.3.1"
+  }
+}
